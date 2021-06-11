@@ -3,9 +3,9 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"github.com/go-sql-driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
+	"goblog/pkg/database"
 	logger2 "goblog/pkg/logger"
 	"goblog/pkg/route"
 	"goblog/pkg/types"
@@ -14,7 +14,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
 	"unicode/utf8"
 )
 
@@ -431,50 +430,10 @@ func articlesCreateHandler(w http.ResponseWriter, r *http.Request)  {
 	tmpl.Execute(w, data)
 }
 
-//数据库驱动初始化
-func initDB()  {
-
-	var err error
-	config := mysql.Config{
-		User: "rdbuser",
-		Passwd: "shop2db123#",
-		Addr: "101.37.150.149:3306",
-		Net: "tcp",
-		DBName: "blog",
-		AllowNativePasswords: true,
-	}
-
-	//准备数据库连接池
-	db, err = sql.Open("mysql", config.FormatDSN())
-	logger2.LogError(err)
-
-	//设置最大连接数
-	db.SetMaxOpenConns(25)
-	//设置最大空闲连接数
-	db.SetMaxIdleConns(25)
-	//设置每个连接的过期时间
-	db.SetConnMaxLifetime(5 * time.Minute)
-
-	//尝试连接 失败报错
-	err = db.Ping()
-	logger2.LogError(err)
-}
-
-
-func createTables() {
-	createArticlesSQL := `CREATE TABLE IF NOT EXISTS articles(
-    id bigint(20) PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    title varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-    body longtext COLLATE utf8mb4_unicode_ci
-); `
-
-	_, err := db.Exec(createArticlesSQL)
-	logger2.LogError(err)
-}
 
 func main() {
-	initDB()
-	createTables()
+	database.Initialize()
+	db = database.DB
 
 	route.Initialize()
 	router = route.Router
