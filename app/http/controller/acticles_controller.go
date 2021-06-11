@@ -33,7 +33,7 @@ func (*ArticlesController) Show(w http.ResponseWriter, r *http.Request) {
 	id := route.GetRouteVariable("id", r)
 
 	// 2. 读取对应的文章数据
-	article, err := article.Get(id)
+	articles, err := article.Get(id)
 
 	// 3. 如果出现错误
 	if err != nil {
@@ -49,14 +49,26 @@ func (*ArticlesController) Show(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		// 4. 读取成功，显示文章
+
+
+		// 2.0 设置模板相对路径
+		viewDir := "resources/views"
+
+		// 2.1 所有布局模板文件 Slice
+		files, err := filepath.Glob(viewDir + "/layouts/*.gohtml")
+		logger2.LogError(err)
+
+		// 2.2 在 Slice 里新增我们的目标文件
+		newFiles := append(files, viewDir+"/articles/show.gohtml")
+
 		tmpl, err := template.New("show.gohtml").
 			Funcs(template.FuncMap{
 				"RouteName2URL": route.Name2URL,
 				"Int64ToString": types.Int64ToString,
 			}).
-			ParseFiles("resources/views/articles/show.gohtml")
+			ParseFiles(newFiles...)
 		logger2.LogError(err)
-		tmpl.Execute(w, article)
+		tmpl.ExecuteTemplate(w, "app", articles)
 	}
 }
 
