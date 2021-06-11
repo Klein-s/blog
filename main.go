@@ -6,6 +6,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
+	"goblog/pkg/route"
 	"html/template"
 	"log"
 	"net/http"
@@ -16,7 +17,7 @@ import (
 	"unicode/utf8"
 )
 
-var router = mux.NewRouter()
+var router *mux.Router
 
 var db *sql.DB
 
@@ -48,16 +49,6 @@ func (a Article) Link() string  {
 	return  showUrl.String()
 }
 
-//RouteName2URl 通过路由名称获取url
-func RouteName2URL(routeName string, pairs ...string) string  {
-	url, err := router.Get(routeName).URL(pairs...)
-	if err != nil {
-		checkError(err)
-		return ""
-	}
-
-	return url.String()
-}
 
 //Int64ToString 将 int64 转为 string
 func Int64ToString(num int64) string  {
@@ -102,7 +93,7 @@ func articlesShowHandler(w http.ResponseWriter, r *http.Request)  {
 		//读取成功
 		tmpl, err := template.New("show.gohtml").
 			Funcs(template.FuncMap{
-				"RouteName2URL": RouteName2URL,
+				"RouteName2URL": route.Name2URL,
 				"Int64ToString": Int64ToString,
 			}).
 			ParseFiles("resources/views/articles/show.gohtml")
@@ -497,6 +488,9 @@ func createTables() {
 func main() {
 	initDB()
 	createTables()
+
+	route.Initialize()
+	router = route.Router
 
 	router.HandleFunc("/", homeHandler).Methods("GET").Name("home")
 	router.HandleFunc("/about", aboutHandler).Methods("GET").Name("about")

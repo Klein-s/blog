@@ -27,7 +27,7 @@ func TestAllPages(t *testing.T)  {
 		{"GET", "/articles/3/edit", 200},
 		{"POST", "/articles/3", 200},
 		{"POST", "/articles", 200},
-		{"POST", "/articles/2/delete", 200},
+		{"POST", "/articles/2/delete", 404},
 	}
 
 	//遍历所有测试
