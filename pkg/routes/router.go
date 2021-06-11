@@ -1,4 +1,4 @@
-package route
+package routes
 
 import (
 	"github.com/gorilla/mux"
@@ -11,6 +11,7 @@ var Router *mux.Router
 //initialize 初始化路由
 func Initialize()  {
 	Router = mux.NewRouter()
+	RegisterWebRoutes(Router)
 }
 
 //Name2URl 通过路由名称获取url

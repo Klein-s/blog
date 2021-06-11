@@ -7,7 +7,7 @@ import (
 	"github.com/gorilla/mux"
 	"goblog/pkg/database"
 	logger2 "goblog/pkg/logger"
-	"goblog/pkg/route"
+	"goblog/pkg/routes"
 	"goblog/pkg/types"
 	"html/template"
 	"net/http"
@@ -21,19 +21,6 @@ var router *mux.Router
 
 var db *sql.DB
 
-func homeHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "<h1>hello 欢迎来到 goblog</h1>")
-}
-
-func aboutHandler(w http.ResponseWriter, r *http.Request)  {
-	fmt.Fprint(w, "此博客是用以记录编程笔记，如您有反馈或建议，请联系 "+
-		"<a href=\"994097656@qq.com\">994097656@qq.com</a>")
-}
-
-func notFoundHandler(w http.ResponseWriter, r *http.Request)  {
-	w.WriteHeader(http.StatusNotFound)
-	fmt.Fprint(w, "<h1>请求页面未找到 :(</h1><p>如有疑惑，请联系我们。</p>")
-}
 
 type Article struct {
 	Title, Body string
@@ -67,7 +54,7 @@ func (a Article) Delete() (rowsAffected int64, err error)  {
 func articlesShowHandler(w http.ResponseWriter, r *http.Request)  {
 
 	//获取url参数
-	id := route.GetRouteVariable("id", r)
+	id := routes.GetRouteVariable("id", r)
 
 	//读取对应文章数据
 	article, err := getArticleByID(id)
@@ -88,7 +75,7 @@ func articlesShowHandler(w http.ResponseWriter, r *http.Request)  {
 		//读取成功
 		tmpl, err := template.New("show.gohtml").
 			Funcs(template.FuncMap{
-				"RouteName2URL": route.Name2URL,
+				"RouteName2URL": routes.Name2URL,
 				"Int64ToString": types.Int64ToString,
 			}).
 			ParseFiles("resources/views/articles/show.gohtml")
@@ -109,7 +96,7 @@ func articlesEditHandler(w http.ResponseWriter, r *http.Request)  {
 
 	//获取url参数
 
-	id := route.GetRouteVariable("id", r)
+	id := routes.GetRouteVariable("id", r)
 
 	//读取对应的文章数据
 	article, err := getArticleByID(id)
@@ -146,7 +133,7 @@ func articlesEditHandler(w http.ResponseWriter, r *http.Request)  {
 func articlesUpdateHandler(w http.ResponseWriter, r *http.Request)  {
 
 	//获取url参数
-	id := route.GetRouteVariable("id", r)
+	id := routes.GetRouteVariable("id", r)
 
 	//获取对应的文章数据
 	_, err := getArticleByID(id)
@@ -240,7 +227,7 @@ func validateArticleFormData(title string, body string) map[string]string {
 func articlesDeleteHandler(w http.ResponseWriter, r *http.Request)  {
 	
 	//获取url参数
-	id := route.GetRouteVariable("id", r)
+	id := routes.GetRouteVariable("id", r)
 	
 	//获取文章数据
 	article, err := getArticleByID(id)
@@ -435,11 +422,9 @@ func main() {
 	database.Initialize()
 	db = database.DB
 
-	route.Initialize()
-	router = route.Router
+	routes.Initialize()
+	router = routes.Router
 
-	router.HandleFunc("/", homeHandler).Methods("GET").Name("home")
-	router.HandleFunc("/about", aboutHandler).Methods("GET").Name("about")
 
 	router.HandleFunc("/articles/{id:[0-9]+}",
 		articlesShowHandler).
@@ -458,8 +443,6 @@ func main() {
 	router.HandleFunc("/articles/{id:[0-9]+}/delete", articlesDeleteHandler).
 		Methods("POST").Name("articles.delete")
 
-	// 自定义 404 页面
-	router.NotFoundHandler = http.HandlerFunc(notFoundHandler)
 
 	//中间件，强制内容为HTMl
 	router.Use(forceHTMLMiddleware)
