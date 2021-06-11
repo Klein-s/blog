@@ -25,4 +25,8 @@ func RegisterWebRoutes(r *mux.Router)  {
 		Methods("POST").Name("articles.store")
 	r.HandleFunc("/articles/create", ac.Create).
 		Methods("GET").Name("articles.create")
+	r.HandleFunc("/articles/{id:[0-9]+}/edit", ac.Edit).
+		Methods("GET").Name("articles.edit")
+	r.HandleFunc("/articles/{id:[0-9]+}", ac.Update).
+		Methods("POST").Name("articles.update")
 }
