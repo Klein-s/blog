@@ -72,7 +72,7 @@ func (a Article) Delete() (rowsAffected int64, err error)  {
 func articlesShowHandler(w http.ResponseWriter, r *http.Request)  {
 
 	//获取url参数
-	id := getRouteVariable("id", r)
+	id := route.GetRouteVariable("id", r)
 
 	//读取对应文章数据
 	article, err := getArticleByID(id)
@@ -102,10 +102,6 @@ func articlesShowHandler(w http.ResponseWriter, r *http.Request)  {
 	}
 }
 
-func getRouteVariable(parameterName string, r *http.Request) string  {
-	vars := mux.Vars(r)
-	return vars[parameterName]
-}
 
 func getArticleByID(id string) (Article, error)  {
 	article := Article{}
@@ -118,7 +114,7 @@ func articlesEditHandler(w http.ResponseWriter, r *http.Request)  {
 
 	//获取url参数
 
-	id := getRouteVariable("id", r)
+	id := route.GetRouteVariable("id", r)
 
 	//读取对应的文章数据
 	article, err := getArticleByID(id)
@@ -155,7 +151,7 @@ func articlesEditHandler(w http.ResponseWriter, r *http.Request)  {
 func articlesUpdateHandler(w http.ResponseWriter, r *http.Request)  {
 
 	//获取url参数
-	id := getRouteVariable("id", r)
+	id := route.GetRouteVariable("id", r)
 
 	//获取对应的文章数据
 	_, err := getArticleByID(id)
@@ -249,7 +245,7 @@ func validateArticleFormData(title string, body string) map[string]string {
 func articlesDeleteHandler(w http.ResponseWriter, r *http.Request)  {
 	
 	//获取url参数
-	id := getRouteVariable("id", r)
+	id := route.GetRouteVariable("id", r)
 	
 	//获取文章数据
 	article, err := getArticleByID(id)
