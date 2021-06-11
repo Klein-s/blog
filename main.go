@@ -230,117 +230,13 @@ func articlesDeleteHandler(w http.ResponseWriter, r *http.Request)  {
 
 
 
-/**
-	文章列表
- */
-func articlesIndexHandler(w http.ResponseWriter, r *http.Request)  {
-
-	//执行查询语句，返回结果集
-	rows, err := db.Query("select * from articles")
-	logger2.LogError(err)
-	defer rows.Close()
-
-	var articles []Article
-	//循环读取结果
-	for rows.Next() {
-		var article Article
-		//扫描每行的结果 并赋值到 article 对象中
-		err := rows.Scan(&article.ID, &article.Title, &article.Body)
-		logger2.LogError(err)
-		//将 article 追加到 articles 数组中
-		articles = append(articles, article)
-	}
-
-	//检查遍历时是否发生错误
-	err = rows.Err()
-	logger2.LogError(err)
-
-	//加载模板
-	tmpl, err := template.ParseFiles("resources/views/articles/index.gohtml")
-	logger2.LogError(err)
-
-	//渲染模板，将所有文章数据传输进去
-	tmpl.Execute(w, articles)
-}
-
 type ArticlesFormData struct {
 	Title, Body string
 	URL *url.URL
 	Errors map[string]string
 }
 
-/**
-	创建文章
- */
-func articlesStoreHandler(w http.ResponseWriter, r *http.Request)  {
 
-	title := r.PostFormValue("title")
-	body := r.PostFormValue("body")
-
-	errors := validateArticleFormData(title, body)
-
-
-	//检查是否有错误
-	if len(errors) == 0 {
-		lastInsertID, err := saveArticleToDB(title, body)
-		if lastInsertID > 0 {
-			fmt.Fprint(w, "插入成功，ID 为"+strconv.FormatInt(lastInsertID, 10))
-		} else {
-			logger2.LogError(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprint(w, "500 服务器内部错误")
-		}
-
-	} else {
-
-		storeURl, _ := router.Get("articles.store").URL()
-
-		data := ArticlesFormData{
-			Title: title,
-			Body: body,
-			URL: storeURl,
-			Errors: errors,
-		}
-		tmpl, err := template.ParseFiles("resources/views/articles/create.gohtml")
-		if err != nil {
-			panic(err)
-		}
-
-		tmpl.Execute(w, data)
-	}
-}
-func saveArticleToDB(title string, body string) (int64, error)  {
-
-	//变量初始化
-	var (
-		id int64
-		err error
-		rs sql.Result
-		stmt *sql.Stmt
-	)
-
-	//获取一个 prepare 声明语句
-	stmt, err = db.Prepare("insert into articles(title, body) value(?,?)")
-	//错误检测
-	if err != nil {
-		return 0, err
-	}
-
-	//函数运行后关闭， 防止占用sql连接
-	defer stmt.Close()
-
-	//执行请求， 传参进入绑定的内容
-	rs, err = stmt.Exec(title, body)
-	if err != nil {
-		return 0, err
-	}
-
-	// 插入成功，返回自增ID
-	if id, err = rs.LastInsertId(); id > 0 {
-		return id, nil
-	}
-	return 0, err
-}
 
 func forceHTMLMiddleware(next http.Handler) http.Handler  {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -361,21 +257,6 @@ func removeTrailingSlash(next http.Handler) http.Handler  {
 	})
 }
 
-func articlesCreateHandler(w http.ResponseWriter, r *http.Request)  {
-
-	storeUrl, _ := router.Get("articles.store").URL()
-	data := ArticlesFormData{
-		Title: "",
-		Body: "",
-		URL: storeUrl,
-		Errors: nil,
-	}
-	tmpl, err := template.ParseFiles("resources/views/articles/create.gohtml")
-	if err != nil {
-		panic(err)
-	}
-	tmpl.Execute(w, data)
-}
 
 //获取url 参数
 func getRouteVariable(parameterName string, r *http.Request) string  {
@@ -393,10 +274,7 @@ func main() {
 
 
 
-	router.HandleFunc("/articles", articlesStoreHandler).
-		Methods("POST").Name("articles.store")
-	router.HandleFunc("/articles/create", articlesCreateHandler).
-		Methods("GET").Name("articles.create")
+
 	router.HandleFunc("/articles/{id:[0-9]+}/edit", articlesEditHandler).
 		Methods("GET").Name("articles.edit")
 	router.HandleFunc("/articles/{id:[0-9]+}", articlesUpdateHandler).
