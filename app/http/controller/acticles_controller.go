@@ -282,3 +282,49 @@ func (*ArticlesController) Update(w http.ResponseWriter, r *http.Request)  {
 	}
 }
 
+/**
+	删除文章
+ */
+func (*ArticlesController) Delete(w http.ResponseWriter, r *http.Request)  {
+	//获取url参数
+	id := route.GetRouteVariable("id", r)
+
+	//获取文章数据
+	_article, err := article.Get(id)
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			//数据未找到
+			w.WriteHeader(http.StatusNotFound)
+			fmt.Fprint(w, "404 文章未找到")
+		} else {
+			//数据库错误
+			logger2.LogError(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprint(w, "500 服务器内部错误")
+		}
+	} else {
+		//未出现错误, 执行删除操作
+		rowsAffected, err := _article.Delete()
+
+		//发生错误
+		if err != nil {
+			//sql 错误
+			logger2.LogError(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprint(w, "500 服务器内部错误")
+		} else {
+			//发生未知错误
+			if rowsAffected > 0 {
+				//重定向到文章列表页面
+				indexUrl := route.Name2URL("articles.index")
+				http.Redirect(w, r, indexUrl, http.StatusFound)
+			} else {
+				w.WriteHeader(http.StatusFound)
+				fmt.Fprint(w, "404 文章未找到")
+			}
+		}
+
+	}
+}
+
