@@ -26,14 +26,7 @@ type Article struct {
 	ID int64
 }
 
-func (a Article) Link() string  {
-	showUrl, err := router.Get("articles.show").URL("id", strconv.FormatInt(a.ID, 10))
-	if err != nil {
-		logger2.LogError(err)
-		return ""
-	}
-	return  showUrl.String()
-}
+
 
 
 func (a Article) Delete() (rowsAffected int64, err error)  {
@@ -399,8 +392,7 @@ func main() {
 	router = bootstrap.SetupRoute()
 
 
-	router.HandleFunc("/articles", articlesIndexHandler).
-		Methods("GET").Name("articles.index")
+
 	router.HandleFunc("/articles", articlesStoreHandler).
 		Methods("POST").Name("articles.store")
 	router.HandleFunc("/articles/create", articlesCreateHandler).
