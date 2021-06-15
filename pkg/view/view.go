@@ -12,26 +12,28 @@ import (
 /**
  	Render 渲染视图
  */
-func Render(w io.Writer, name string, data interface{})  {
+func Render(w io.Writer,  data interface{}, tplFiles ...string)  {
 	//设置模板相对路径
 	viewDir := "resources/views/"
 
-	//将 articles.show 转为 articles/show
-	name = strings.Replace(name, ".", "/", -1)
+	//遍历 tplFiles,设置正确路径
+	for i, f := range tplFiles{
+		tplFiles[i] = viewDir + strings.Replace(f, ".", "/", -1) + ".gohtml"
+	}
 	//获取所有布局模板 slice
-	files, err := filepath.Glob(viewDir+"layouts/*.gohtml")
+	layoutFiles, err := filepath.Glob(viewDir+"layouts/*.gohtml")
 
 	logger2.LogError(err)
 
 	//将 slice加入 目标文件
-	newFiles := append(files, viewDir+name+".gohtml")
+	allFiles := append(layoutFiles, tplFiles...)
 
 	//解析所有模板文件
-	tmpl, err := template.New(name + ".gohtml").
+	tmpl, err := template.New("").
 		Funcs(template.FuncMap{
 			"RouteName2URL": route.Name2URL,
 		}).
-		ParseFiles(newFiles...)
+		ParseFiles(allFiles...)
 	logger2.LogError(err)
 
 	tmpl.ExecuteTemplate(w, "app", data)
