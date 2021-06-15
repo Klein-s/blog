@@ -53,7 +53,12 @@ func (*AuthController) DoRegister (w http.ResponseWriter, r *http.Request)  {
 		}
 	}
 
+}
 
+func (*AuthController) Login(w http.ResponseWriter, r *http.Request)  {
+	view.RenderSimple(w, view.D{}, "auth.login")
+}
 
-	//表单不通过  重新显示页面
+func (*AuthController) DoLogin(w http.ResponseWriter, r *http.Request)  {
+
 }
