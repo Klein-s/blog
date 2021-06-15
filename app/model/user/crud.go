@@ -3,6 +3,7 @@ package user
 import (
 	logger2 "goblog/pkg/logger"
 	"goblog/pkg/model"
+	"goblog/pkg/password"
 	"goblog/pkg/types"
 )
 
@@ -36,6 +37,6 @@ func GetByEmail(email string) (User, error)  {
 }
 
 // ComparePassword 对比密码是否匹配
-func (u User) ComparePassword(password string) bool  {
-	return u.Password == password
+func (u User) ComparePassword(_password string) bool  {
+	return password.CheckHas(_password, u.Password)
 }
