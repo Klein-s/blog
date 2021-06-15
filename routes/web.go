@@ -11,7 +11,7 @@ func RegisterWebRoutes(r *mux.Router)  {
 
 	//静态页面
 	pc := new(controller.PageController)
-	r.HandleFunc("/", pc.Home).Methods("GET").Name("home")
+	//r.HandleFunc("/", pc.Home).Methods("GET").Name("home")
 	r.HandleFunc("/about", pc.About).Methods("GET").Name("about")
 	r.NotFoundHandler = http.HandlerFunc(pc.NotFound)
 
@@ -19,7 +19,7 @@ func RegisterWebRoutes(r *mux.Router)  {
 	ac := new(controller.ArticlesController)
 
 	r.HandleFunc("/articles/{id:[0-9]+}", ac.Show).Methods("GET").Name("articles.show")
-	r.HandleFunc("/articles", ac.Index).
+	r.HandleFunc("/", ac.Index).
 		Methods("GET").Name("articles.index")
 	r.HandleFunc("/articles", ac.Store).
 		Methods("POST").Name("articles.store")
@@ -31,6 +31,13 @@ func RegisterWebRoutes(r *mux.Router)  {
 		Methods("POST").Name("articles.update")
 	r.HandleFunc("/articles/{id:[0-9]+}/delete", ac.Delete).
 		Methods("POST").Name("articles.delete")
+
+	//用户认证
+
+	auc := new(controller.AuthController)
+
+	r.HandleFunc("/auth/register", auc.Register).Methods("GET").Name("auth.register")
+	r.HandleFunc("/auth/register", auc.DoRegister).Methods("POST").Name("auth.doregister")
 
 	//静态资源
 	r.PathPrefix("/css/").Handler(http.FileServer(http.Dir("./public")))
