@@ -6,7 +6,7 @@
 
         <h3 class="mb-5 text-center">用户登录</h3>
 
-        <form action="{{ RouteName2URL "auth.login" }}" method="post">
+        <form action="{{ RouteName2URL "auth.dologin" }}" method="post">
 
             <div class="form-group row mb-3">
                 <label for="email" class="col-md-4 col-form-label text-md-end">E-mail</label>
@@ -24,7 +24,7 @@
             <div class="form-group row mb-3">
                 <label for="email" class="col-md-4 col-form-label text-md-end">密码</label>
                 <div class="col-md-6">
-                    <input id="password" type="password" class="form-control {{if .Error.password}} is-invalid {{end}}" name="password"
+                    <input id="password" type="password" class="form-control {{if .Errors.password}} is-invalid {{end}}" name="password"
                            value="{{ .Password }}" required="">
                 </div>
             </div>
