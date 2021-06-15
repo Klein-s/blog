@@ -1,6 +1,7 @@
 package view
 
 import (
+	"goblog/pkg/auth"
 	logger2 "goblog/pkg/logger"
 	route "goblog/pkg/routes"
 	"html/template"
@@ -13,21 +14,24 @@ type D map[string]interface{}
 /**
  	Render 渲染通用视图
  */
-func Render(w io.Writer,  data interface{}, tplFiles ...string)  {
+func Render(w io.Writer,  data D, tplFiles ...string)  {
 	RenderTemplate(w, "app", data, tplFiles...)
 }
 
 /**
 	RenderSimple 渲染简单视图
 */
-func RenderSimple(w io.Writer,  data interface{}, tplFiles ...string)  {
+func RenderSimple(w io.Writer,  data D, tplFiles ...string)  {
 	RenderTemplate(w, "simple", data, tplFiles...)
 }
 
 /**
 	RenderTemplate 渲染视图
 */
-func RenderTemplate(w io.Writer, name string,  data interface{}, tplFiles ...string)  {
+func RenderTemplate(w io.Writer, name string,  data D, tplFiles ...string)  {
+
+	data["isLogined"] = auth.Check()
+
 	//设置模板相对路径
 	viewDir := "resources/views/"
 
