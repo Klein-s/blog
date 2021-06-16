@@ -10,7 +10,8 @@ import (
 
 type Article struct {
 	model.BaseModel
-	Title, Body string
+	Title string `valid:"title"`
+	Body string `valid:"body"`
 }
 
 func (a Article) Link() string  {
