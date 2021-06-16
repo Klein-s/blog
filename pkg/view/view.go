@@ -2,6 +2,7 @@ package view
 
 import (
 	"goblog/pkg/auth"
+	"goblog/pkg/flash"
 	logger2 "goblog/pkg/logger"
 	route "goblog/pkg/routes"
 	"html/template"
@@ -31,6 +32,8 @@ func RenderSimple(w io.Writer,  data D, tplFiles ...string)  {
 func RenderTemplate(w io.Writer, name string,  data D, tplFiles ...string)  {
 
 	data["isLogined"] = auth.Check()
+	data["flash"] = flash.All()
+	data["loginuser"] = auth.User()
 
 	//设置模板相对路径
 	viewDir := "resources/views/"
