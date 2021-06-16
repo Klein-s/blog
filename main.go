@@ -5,12 +5,17 @@ import (
 	"github.com/gorilla/mux"
 	"goblog/app/http/middlewares"
 	"goblog/bootstrap"
+	"goblog/config"
+	c "goblog/pkg/config"
 	"net/http"
 )
 
 
 var router *mux.Router
 
+func init()  {
+	config.Initialize()
+}
 
 func main() {
 
@@ -18,5 +23,5 @@ func main() {
 	router = bootstrap.SetupRoute()
 
 
-	http.ListenAndServe(":8005", middlewares.RemoveTrailingSlash(router))
+	http.ListenAndServe(":" + c.GetString("app.port"), middlewares.RemoveTrailingSlash(router))
 }
