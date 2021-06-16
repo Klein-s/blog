@@ -12,3 +12,7 @@ type User struct {
 
 	PasswordConfirm string `gorm:"-" valid:"password_confirm"`
 }
+
+func (u User) Link() string  {
+	return ""
+}
