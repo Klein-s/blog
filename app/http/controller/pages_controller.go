@@ -19,5 +19,5 @@ func (*PageController) About(w http.ResponseWriter, r *http.Request)  {
 
 func (*PageController) NotFound(w http.ResponseWriter, r *http.Request)  {
 	w.WriteHeader(http.StatusNotFound)
-	fmt.Fprint(w, "<h1>请求页面未找到 :(</h1><p>如有疑惑，请联系我们。</p>")
+	fmt.Fprint(w, "<h1>请求页面未找到2 :(</h1><p>如有疑惑，请联系我们。</p>")
 }
