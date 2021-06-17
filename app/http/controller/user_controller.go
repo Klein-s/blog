@@ -7,16 +7,15 @@ import (
 	logger2 "goblog/pkg/logger"
 	route "goblog/pkg/routes"
 	"goblog/pkg/view"
-	"gorm.io/gorm"
 	"net/http"
 )
 
 type UserController struct {
-
+	BaseController
 }
 
 //显示用户信息
-func (*UserController) Show(w http.ResponseWriter, r *http.Request)  {
+func (uc UserController) Show(w http.ResponseWriter, r *http.Request)  {
 
 	//获取url id
 	id := route.GetRouteVariable("id", r)
@@ -26,14 +25,7 @@ func (*UserController) Show(w http.ResponseWriter, r *http.Request)  {
 
 
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			w.WriteHeader(http.StatusNotFound)
-			fmt.Fprint(w, "404用户不存在")
-		} else {
-			logger2.LogError(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprint(w, "500 服务器内部错误")
-		}
+		uc.ResponseForSQLError(w, err)
 	} else {
 
 		//读取用户文章
