@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"goblog/app/model/article"
 	"goblog/app/requests"
+	"goblog/pkg/auth"
 	logger2 "goblog/pkg/logger"
 	route "goblog/pkg/routes"
+	"goblog/pkg/types"
 	"goblog/pkg/view"
 	"gorm.io/gorm"
 	"net/http"
@@ -94,6 +96,7 @@ func (*ArticlesController) Store(w http.ResponseWriter, r *http.Request)  {
 	_article := article.Article{
 		Title: r.PostFormValue("title"),
 		Body: r.PostFormValue("body"),
+		UserID: types.StringToUint64(auth.User().GetStringID()),
 	}
 	errors := requests.ValidateArticleForm(_article)
 

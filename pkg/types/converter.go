@@ -15,6 +15,11 @@ func Uint64ToString(num uint64) string  {
 	return  strconv.FormatUint(num, 10)
 }
 
+func StringToUint64(str string) uint64  {
+	id, _ := strconv.ParseUint(str, 0, 64)
+	return id
+}
+
 //StringToInt 将字符串转为 int
 func StringToInt(str string) int  {
 	i, err := strconv.Atoi(str)
