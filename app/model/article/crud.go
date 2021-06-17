@@ -54,3 +54,13 @@ func (article *Article) Delete() (rowsAffected int64, err error)  {
 	}
 	return result.RowsAffected, nil
 }
+
+//根据用户id获取全部文章
+func GetByUserID(uid string) ([]Article, error)  {
+	var article []Article
+	if err := model.DB.Where("user_id = ?", uid).Preload("User").Find(&article).Error; err != nil {
+		return article, err
+	}
+
+	return article,nil
+}
