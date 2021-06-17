@@ -8,7 +8,6 @@ import (
 	"goblog/pkg/auth"
 	logger2 "goblog/pkg/logger"
 	route "goblog/pkg/routes"
-	"goblog/pkg/types"
 	"goblog/pkg/view"
 	"net/http"
 )
@@ -84,7 +83,7 @@ func (*ArticlesController) Store(w http.ResponseWriter, r *http.Request) {
 	_article := article.Article{
 		Title:  r.PostFormValue("title"),
 		Body:   r.PostFormValue("body"),
-		UserID: types.StringToUint64(auth.User().GetStringID()),
+		UserID: auth.User().ID,
 	}
 	errors := requests.ValidateArticleForm(_article)
 
