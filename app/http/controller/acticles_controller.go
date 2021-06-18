@@ -53,7 +53,7 @@ func (ac ArticlesController) Show(w http.ResponseWriter, r *http.Request) {
 */
 func (ac ArticlesController) Index(w http.ResponseWriter, r *http.Request) {
 	//执行查询语句，返回结果集
-	articles, err := article.GetAll()
+	articles, pagerData, err := article.GetAll(r, 10)
 
 	if err != nil {
 		ac.ResponseForSQLError(w, err)
@@ -62,6 +62,7 @@ func (ac ArticlesController) Index(w http.ResponseWriter, r *http.Request) {
 
 		view.Render(w, view.D{
 			"Article": articles,
+			"PagerData": pagerData,
 		}, "articles.index", "articles._article_meta")
 	}
 
