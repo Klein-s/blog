@@ -10,20 +10,20 @@ func ValidateArticleForm(data article.Article) map[string][]string  {
 
 	//定制认证规则
 	rules := govalidator.MapData{
-		"title": []string{"required", "min:3", "max:40"},
-		"body": []string{"required", "min:10"},
+		"title": []string{"required", "min_cn:3", "max_cn:40"},
+		"body": []string{"required", "min_cn:10"},
 	}
 
 	//定制错误消息
 	messages := govalidator.MapData{
 		"title": []string{
 			"required:标题为必填项",
-			"min:标题长度大于3",
-			"max:标题长度小于40",
+			"min_cn:标题长度大于3",
+			"max_cn:标题长度小于40",
 		},
 		"body":[]string{
 			"required:文章内容为必填",
-			"min:长度需要大于10",
+			"min_cn:长度需要大于10",
 		},
 	}
 
