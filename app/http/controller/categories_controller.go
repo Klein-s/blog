@@ -49,3 +49,10 @@ func (* CategoriesController) Store(w http.ResponseWriter, r *http.Request)  {
 	}
 
 }
+
+/**
+	显示分类
+ */
+func (*CategoriesController) Show(w http.ResponseWriter, r *http.Request)  {
+
+}

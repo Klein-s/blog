@@ -40,6 +40,7 @@ func RegisterWebRoutes(r *mux.Router)  {
 		Methods("GET").Name("categories.create")
 	r.HandleFunc("/categories/store",  middlewares.Auth(cc.Store)).
 		Methods("POST").Name("categories.store")
+	r.HandleFunc("/categories/{id:[0-9]+}", cc.Show).Methods("GET").Name("categories.show")
 
 	//用户认证
 
