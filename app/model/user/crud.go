@@ -27,6 +27,15 @@ func Get(idstr string) (User, error)  {
 
 }
 
+//获取三个用户
+func Limit3() ([]User, error) {
+	var users []User
+	if err := model.DB.Limit(3).Find(&users).Error; err != nil {
+		return users, err
+	}
+	return users, nil
+}
+
 //根据邮箱获取用户信息
 func GetByEmail(email string) (User, error)  {
 	var user User
