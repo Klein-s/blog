@@ -11,11 +11,9 @@
                 <h3 class="blog-post-title">
                     <a href="{{ $article.Link }}" class="text-dark text-decoration-none">{{ $article.Title }}</a>
                 </h3>
-
+                <hr>
                 {{template "article-meta" $article}}
 
-                <hr>
-                {{ $article.Body }}
             </div><!-- /.blog-post -->
         {{ end }}
 

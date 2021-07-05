@@ -3,11 +3,13 @@ package controller
 import (
 	"fmt"
 	"goblog/app/model/article"
+	"goblog/app/model/category"
 	"goblog/app/policies"
 	"goblog/app/requests"
 	"goblog/pkg/auth"
 	logger2 "goblog/pkg/logger"
 	route "goblog/pkg/routes"
+	"goblog/pkg/types"
 	"goblog/pkg/view"
 	"net/http"
 )
@@ -71,9 +73,17 @@ func (ac ArticlesController) Index(w http.ResponseWriter, r *http.Request) {
 /**
 文章创建页面
 */
-func (*ArticlesController) Create(w http.ResponseWriter, r *http.Request) {
+func (ac *ArticlesController) Create(w http.ResponseWriter, r *http.Request) {
 
-	view.Render(w, view.D{}, "articles.create", "articles._form_field")
+	//获取所有的分类
+	categories, err := category.All()
+
+	if err != nil {
+		ac.ResponseForSQLError(w, err)
+	}
+	view.Render(w, view.D{
+		"Categories": categories,
+	}, "articles.create", "articles._form_field")
 }
 
 /**
@@ -84,6 +94,7 @@ func (*ArticlesController) Store(w http.ResponseWriter, r *http.Request) {
 	_article := article.Article{
 		Title:  r.PostFormValue("title"),
 		Body:   r.PostFormValue("body"),
+		CategoryID: types.StringToUint64(r.PostFormValue("category")),
 		UserID: auth.User().ID,
 	}
 	errors := requests.ValidateArticleForm(_article)
@@ -121,6 +132,9 @@ func (ac ArticlesController) Edit(w http.ResponseWriter, r *http.Request) {
 	//读取对应的文章数据
 	_article, err := article.Get(id)
 
+	//获取所有的分类
+	categories, err := category.All()
+
 	if err != nil {
 		ac.ResponseForSQLError(w, err)
 	} else {
@@ -132,6 +146,7 @@ func (ac ArticlesController) Edit(w http.ResponseWriter, r *http.Request) {
 
 			view.Render(w, view.D{
 				"Article": _article,
+				"Categories": categories,
 				"Errors":  map[string]string{"title": "", "body": ""},
 			}, "articles.edit", "articles._form_field")
 		}
@@ -160,7 +175,7 @@ func (ac ArticlesController) Update(w http.ResponseWriter, r *http.Request) {
 			//验证表单
 			_article.Title = r.PostFormValue("title")
 			_article.Body = r.PostFormValue("body")
-
+			_article.CategoryID = types.StringToUint64(r.PostFormValue("category"))
 			errors := requests.ValidateArticleForm(_article)
 
 			if len(errors) == 0 {

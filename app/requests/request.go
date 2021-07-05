@@ -57,4 +57,15 @@ func init() {
 		}
 		return nil
 	})
+
+	govalidator.AddCustomRule("required_id", func(field string, rule string, message string, value interface{}) error {
+
+		if value == 0 {
+			if message != "" {
+				return errors.New(message)
+			}
+			return fmt.Errorf("分类为必填")
+		}
+		return nil
+	})
 }
