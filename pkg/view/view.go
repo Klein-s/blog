@@ -38,6 +38,7 @@ func renderTemplate(w io.Writer, name string,  data D, tplFiles ...string)  {
 	data["loginuser"] = auth.User()
 	data["Categories"], _ = category.All()
 	data["Users"], _ = user.Limit3()
+	data["IsAdmin"] = auth.User().HasRole("admin")
 
 	//设置模板相对路径
 	viewDir := "resources/views/"

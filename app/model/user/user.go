@@ -14,8 +14,16 @@ type User struct {
 	Password string `gorm:"type:varchar(255)" valid:"password"`
 
 	PasswordConfirm string `gorm:"-" valid:"password_confirm"`
+	Role string `gorm:"type:varchar(255); default:NULL"`
 }
 
 func (u User) Link() string  {
 	return route.Name2URL("users.show", "id", u.GetStringID())
+}
+
+func (u User) HasRole(role string) bool  {
+	if u.Role == role{
+		return true
+	}
+	return false
 }

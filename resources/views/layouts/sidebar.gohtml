@@ -11,7 +11,10 @@
                 {{ range $key, $category := .Categories }}
                     <li><a href="{{ $category.Link }}">{{ $category.Name }}</a></li>
                 {{end}}
-                <li><a href="{{ RouteName2URL "categories.create"}}">+ 新建分类</a></li>
+                {{if .IsAdmin}}
+                    <li><a href="{{ RouteName2URL "categories.create"}}">+ 新建分类</a></li>
+                    <li><a href="/">+ 编辑分类</a></li>
+                {{end}}
             </ol>
         </div>
 
