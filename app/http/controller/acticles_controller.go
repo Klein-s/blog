@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"goblog/app/model/article"
 	"goblog/app/model/category"
+	"goblog/app/model/review"
 	"goblog/app/policies"
 	"goblog/app/requests"
 	"goblog/pkg/auth"
@@ -41,12 +42,21 @@ func (ac ArticlesController) Show(w http.ResponseWriter, r *http.Request) {
 		ac.ResponseForSQLError(w, err)
 
 	} else {
-		// 4. 读取成功，显示文章
+		//获取评论
+		reviews, pagerData, err := review.GetAll(r, 10, article.GetStringID())
+		if err != nil {
+			ac.ResponseForSQLError(w, err)
+		} else {
+			// 4. 读取成功，显示文章
 
-		view.Render(w, view.D{
-			"Article": article,
-			"CanModifyArticle": policies.CanModifyArticle(article),
-		}, "articles.show", "articles._article_meta")
+			view.Render(w, view.D{
+				"Article": article,
+				"CanModifyArticle": policies.CanModifyArticle(article),
+				"Reviews": reviews,
+				"PagerData": pagerData,
+			}, "articles.show", "articles._article_meta")
+		}
+
 	}
 }
 

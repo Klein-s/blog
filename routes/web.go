@@ -42,6 +42,12 @@ func RegisterWebRoutes(r *mux.Router)  {
 		Methods("POST").Name("categories.store")
 	r.HandleFunc("/categories/{id:[0-9]+}", cc.Show).Methods("GET").Name("categories.show")
 
+	//文章评论
+
+	rc := new(controller.ReviewsController)
+
+	r.HandleFunc("/reviews/store", middlewares.Auth(rc.Store)).Methods("POST").Name("reviews.store")
+
 	//用户认证
 
 	auc := new(controller.AuthController)

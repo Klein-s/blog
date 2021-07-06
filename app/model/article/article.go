@@ -23,7 +23,3 @@ type Article struct {
 func (a Article) Link() string  {
 	return route.Name2URL("articles.show", "id", strconv.FormatUint(a.ID, 10))
 }
-
-func (a Article) CratedAtDate() string  {
-	return a.CreatedAt.Format("2006-01-02")
-}

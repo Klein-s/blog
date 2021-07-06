@@ -15,3 +15,7 @@ type BaseModel struct {
 func (a BaseModel) GetStringID() string  {
 	return types.Uint64ToString(a.ID)
 }
+
+func (a BaseModel) CratedAtDate() string  {
+	return a.CreatedAt.Format("2006-01-02")
+}
