@@ -17,11 +17,11 @@ func (review *Review) Create() (err error){
 	return nil
 }
 
-// 获取全部评论
-func GetAll(r *http.Request, perPage int, articleId string) ([]Review, pagination.ViewData, error)  {
+// 获取文章全部评论
+func GetArticleReviews(r *http.Request, perPage int, articleId string) ([]Review, pagination.ViewData, error)  {
 
 	//初始化分页实例
-	db := model.DB.Preload("User").Model(Review{}).Order("created_at desc")
+	db := model.DB.Where("article_id = ?", articleId).Preload("User").Model(Review{}).Order("created_at desc")
 	_pager := pagination.New(r, db, route.Name2URL("articles.show", "id", articleId), perPage)
 
 	//获取视图数据

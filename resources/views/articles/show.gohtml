@@ -57,18 +57,22 @@
                 </form>
             </div>
             <h4 class="mt-3">评论列表</h4>
-            {{ range $key, $review := .Reviews }}
-                <div class="mt-3">
-                    <div>
+            {{if .Reviews }}
+                {{ range $key, $review := .Reviews }}
+                    <div class="mt-3">
+                        <div>
                         <span style="font-size:20px"><a href="{{ $review.User.Link }}"
                                                         class="font-weight-bold">{{ $review.User.Name }}</a></span><span
-                                style="font-size:16px"> {{ $review.CratedAtDate }}</span>
+                                    style="font-size:16px"> {{ $review.CratedAtDate }}</span>
+                        </div>
+                        <span>{{ $review.Content }}</span>
+                        <hr>
                     </div>
-                    <span>{{ $review.Content }}</span>
-                    <hr>
-                </div>
+                {{end}}
+                {{template "pagination" .PagerData }}
+            {{else}}
+                暂无评论
             {{end}}
-            {{template "pagination" .PagerData }}
         </div>
     </div>
 {{end}}

@@ -43,7 +43,7 @@ func (ac ArticlesController) Show(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 		//获取评论
-		reviews, pagerData, err := review.GetAll(r, 10, article.GetStringID())
+		reviews, pagerData, err := review.GetArticleReviews(r, 10, article.GetStringID())
 		if err != nil {
 			ac.ResponseForSQLError(w, err)
 		} else {
