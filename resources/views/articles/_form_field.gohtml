@@ -48,7 +48,7 @@
         ClassicEditor
             .create( document.querySelector( '#editor' ), {
                 ckfinder: {
-                    uploadUrl: {{ RouteName2URL "upload"}},
+                    uploadUrl: {{ RouteName2URL "upload" }} + "?dir=images&type=articles",
                 }
             } )
             .catch( error => {

@@ -36,7 +36,7 @@ func RegisterWebRoutes(r *mux.Router)  {
 	//图片上传
 	upc := new(controller.UploadController)
 	r.HandleFunc("/upload-images", upc.UploadImage).Methods("POST").Name("upload")
-	r.HandleFunc("/uploads/{file}", upc.ShowImages).Methods("GET")
+	r.HandleFunc("/uploads/{dir}/{type}/{filename}", upc.ShowImages).Methods("GET")
 
 	//文章分类
 
