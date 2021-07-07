@@ -4,22 +4,21 @@
 
 {{define "main"}}
     <div class="col-md-9 blog-main">
-
+        <div class="blog-post bg-white p-5 rounded shadow mb-4">
         {{ range $key, $article := .Article }}
 
-            <div class="blog-post bg-white p-5 rounded shadow mb-4">
-                <h3 class="blog-post-title">
-                    <a href="{{ $article.Link }}" class="text-dark text-decoration-none">{{ $article.Title }}</a>
-                </h3>
-                <hr>
-                {{template "article-meta" $article}}
 
-            </div><!-- /.blog-post -->
+                <h5 class="blog-post-title">
+                    <a href="{{ $article.Link }}" class="text-dark text-decoration-none">{{ $article.Title }}</a>
+                </h5>
+
+                {{template "article-meta" $article}}
+                <hr>
+
         {{ end }}
 
-
         {{template "pagination" .PagerData }}
-
+        </div><!-- /.blog-post -->
 
     </div><!-- /.blog-main -->
 {{end}}
