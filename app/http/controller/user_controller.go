@@ -1,10 +1,8 @@
 package controller
 
 import (
-	"fmt"
 	"goblog/app/model/article"
 	"goblog/app/model/user"
-	logger2 "goblog/pkg/logger"
 	route "goblog/pkg/routes"
 	"goblog/pkg/view"
 	"net/http"
@@ -29,13 +27,11 @@ func (uc UserController) Show(w http.ResponseWriter, r *http.Request)  {
 	} else {
 
 		//读取用户文章
-		articles, _ := article.GetByUserID(_user.GetStringID())
+		articles, err := article.GetByUserID(_user.GetStringID())
 
 		//fmt.Fprint(w, articles)
 		if err != nil {
-			logger2.LogError(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprint(w, "500服务器内部错误")
+			uc.ResponseForSQLError(w, err)
 		} else {
 			//fmt.Fprint(w, articles)
 			view.Render(w, view.D{
