@@ -59,9 +59,14 @@ func renderTemplate(w io.Writer, name string,  data D, tplFiles ...string)  {
 	tmpl, err := template.New("").
 		Funcs(template.FuncMap{
 			"RouteName2URL": route.Name2URL,
+			"Html": Html,
 		}).
 		ParseFiles(allFiles...)
 	logger2.LogError(err)
 
 	tmpl.ExecuteTemplate(w, name, data)
+}
+
+func Html(content string) interface{} {
+	return template.HTML(content)
 }

@@ -33,6 +33,11 @@ func RegisterWebRoutes(r *mux.Router)  {
 	r.HandleFunc("/articles/{id:[0-9]+}/delete", middlewares.Auth(ac.Delete)).
 		Methods("POST").Name("articles.delete")
 
+	//图片上传
+	upc := new(controller.UploadController)
+	r.HandleFunc("/upload-images", upc.UploadImage).Methods("POST").Name("upload")
+	r.HandleFunc("/uploads/{file}", upc.ShowImages).Methods("GET")
+
 	//文章分类
 
 	cc := new(controller.CategoriesController)
@@ -67,7 +72,7 @@ func RegisterWebRoutes(r *mux.Router)  {
 	//静态资源
 	r.PathPrefix("/css/").Handler(http.FileServer(http.Dir("./public")))
 	r.PathPrefix("/js/").Handler(http.FileServer(http.Dir("./public")))
-
+	r.PathPrefix("/uploads/").Handler(http.FileServer(http.Dir("./uploads")))
 	//注册中间件
 
 	//开启会话

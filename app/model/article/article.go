@@ -12,9 +12,9 @@ import (
 
 type Article struct {
 	model.BaseModel
-	Title string `valid:"title"`
-	Body string `valid:"body"`
-	UserID uint64 `gorm:"not null;index"`
+	Title string `gorm:"varchar(255); not null" valid:"title"`
+	Body string `gorm:"longtext; not null" valid:"body"`
+	UserID uint64 `gorm:"not null;index; <-:create"`
 	User user.User
 	CategoryID uint64 `gorm:"not null; default:2; index;" valid:"category_id"`
 	Category category.Category

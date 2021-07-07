@@ -9,7 +9,7 @@
             {{template "article-meta" .Article}}
 
             <hr>
-            {{ .Article.Body }}
+            {{ Html .Article.Body }}
 
             {{if .CanModifyArticle }}
                 {{/* 构建删除按钮  */}}
